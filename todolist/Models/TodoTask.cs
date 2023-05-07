@@ -1,6 +1,6 @@
 ﻿namespace todolist.Models
 {
-    public class Task
+    public class TodoTask
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; }
