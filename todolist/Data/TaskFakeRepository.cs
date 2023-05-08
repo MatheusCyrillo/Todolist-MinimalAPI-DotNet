@@ -7,15 +7,17 @@ namespace todolist.Data
     public class TaskFakeRepository : ITaskRepository
     {
         private List<TodoTask> _tasks = new List<TodoTask>();
-        public TaskFakeRepository()
+        private IMapper _mapper;
+        public TaskFakeRepository(IMapper mapper)
         {
- 
+            _mapper = mapper;
         }
 
         public Guid Create(CreateTaskDTO createTaskDTO)
         {
-            _tasks.Add(new TodoTask());
-            return Guid.NewGuid();
+            var todoTask = _mapper.Map<CreateTaskDTO, TodoTask>(createTaskDTO);
+            _tasks.Add(todoTask);
+            return todoTask.Id;
         }
 
         public List<TodoTask> GetAllTasks()

@@ -2,11 +2,17 @@
 {
     public class TodoTask
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-        public bool IsCompleted { get; private set; }
-        public DateTime CreationDate { get; private set; }
-        public DateTime CompletionDate { get; private set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsCompleted { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime? CompletionDate { get; set; }
+
+        public TodoTask()
+        {
+            Id = Guid.NewGuid();
+            CreationDate = DateTime.Now;
+        }
     }
 }
