@@ -29,5 +29,10 @@ namespace todolist.Data
         {
             return _tasks.FirstOrDefault(t => t.Id == Id);
         }
+
+        public int DeleteTaskById(Guid Id)
+        {
+            return _tasks.RemoveAll(t => t.Id == Id);
+        }
     }
 }

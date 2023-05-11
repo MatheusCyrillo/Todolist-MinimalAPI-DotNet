@@ -8,5 +8,6 @@ namespace todolist
         Guid Create(CreateTaskDTO createTaskDTO);
         List<TodoTask> GetAllTasks();
         TodoTask GetTaskById(Guid Id);
+        int DeleteTaskById(Guid Id);
     }
 }
