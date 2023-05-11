@@ -24,23 +24,35 @@ app.UseHttpsRedirection();
 
 app.MapGet("/api/tasks", (ITaskRepository taskRepository) =>
 {
-    return taskRepository.GetAllTasks();
+    return Results.Ok(taskRepository.GetAllTasks());
 })
 .WithName("GetAllTasks")
 .WithOpenApi();
 
 app.MapGet("/api/task/{id:Guid}", (ITaskRepository taskRepository, Guid id) =>
 {
-    return taskRepository.GetTaskById(id);
+    return Results.Ok(taskRepository.GetTaskById(id));
 })
 .WithName("GetTask")
 .WithOpenApi();
 
 app.MapPost("/api/task", (ITaskRepository taskRepository, [FromBody] CreateTaskDTO createTaskDTO) =>
 {
-    return taskRepository.Create(createTaskDTO);
+    Guid id = taskRepository.Create(createTaskDTO);
+    return Results.CreatedAtRoute("GetTask", new { id });
 })
 .WithName("CreateTask")
+.WithOpenApi();
+
+app.MapDelete("/api/task/{id:Guid}", (ITaskRepository taskRepository, Guid id) =>
+{
+    if (taskRepository.DeleteTaskById(id) == 1)
+        return Results.NoContent();
+    else
+        return Results.NotFound();
+
+})
+.WithName("DeleteTask")
 .WithOpenApi();
 
 app.Run();
