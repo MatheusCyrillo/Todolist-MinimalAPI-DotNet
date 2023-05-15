@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
-using System.Collections.Generic;
+using todolist.Data.Postgresql;
 using todolist.Models;
 using todolist.Models.DTO;
 
 namespace todolist.Data
 {
-    public class TaskFakeRepository : ITaskRepository
+    public class TaskRepository : ITaskRepository
     {
         private List<TodoTask> _tasks = new List<TodoTask>();
         private IMapper _mapper;
-        public TaskFakeRepository(IMapper mapper)
+        private IPostgresqlDataAccess _db;
+        public TaskRepository(IMapper mapper, IPostgresqlDataAccess db)
         {
             _mapper = mapper;
+            _db = db;
         }
 
         public Guid Create(CreateTaskDTO createTaskDTO)
@@ -21,12 +23,21 @@ namespace todolist.Data
             return todoTask.Id;
         }
 
-        public Task<IEnumerable<TodoTask>> GetAllTasks()
+        public async Task<IEnumerable<TodoTask>> GetAllTasks()
         {
-            return null;
+            try
+            {
+                var script = "SELECT * FROM public.todolist";
+                var teste = await _db.GetData<TodoTask, dynamic>(script, new { });
+                return null;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public TodoTask GetTaskById(Guid Id)
+        public TodoTask GetTaskById(Guid Id) 
         {
             return _tasks.FirstOrDefault(t => t.Id == Id);
         }

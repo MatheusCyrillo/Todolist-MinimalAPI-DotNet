@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using todolist;
 using todolist.Data;
+using todolist.Data.Postgresql;
 using todolist.Models.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ITaskRepository, TaskFakeRepository>();
+builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddSingleton<IPostgresqlDataAccess, PostgresqlDataAccess>();
 builder.Services.AddAutoMapper(typeof(MapperConfiguration));
 var app = builder.Build();
 
