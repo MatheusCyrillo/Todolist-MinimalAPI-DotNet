@@ -9,6 +9,8 @@ namespace todolist
         public MapperConfiguration()
         {
             CreateMap<CreateTaskDTO, TodoTask>();
+            CreateMap<UpdateTaskDTO, TodoTask>();
+
         }
     }
 }

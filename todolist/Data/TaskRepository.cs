@@ -16,35 +16,37 @@ namespace todolist.Data
             _db = db;
         }
 
-        public Guid Create(CreateTaskDTO createTaskDTO)
+        public async Task<Guid> Create(CreateTaskDTO createTaskDTO)
         {
             var todoTask = _mapper.Map<CreateTaskDTO, TodoTask>(createTaskDTO);
-            _tasks.Add(todoTask);
+            var script = "INSERT INTO public.todolist (pk_todolistid, name, description, iscompleted, creationdate, completiondate) VALUES (@Id, @Name, @Description, @IsCompleted, @CreationDate, @CompletionDate);";
+            await _db.SetData(script, todoTask);
             return todoTask.Id;
         }
 
         public async Task<IEnumerable<TodoTask>> GetAllTasks()
         {
-            try
-            {
-                var script = "SELECT * FROM public.todolist";
-                var teste = await _db.GetData<TodoTask, dynamic>(script, new { });
-                return null;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            var script = "SELECT pk_todolistid as Id, * FROM public.todolist"; //Scripts
+            var allTasks = await _db.GetData<TodoTask, dynamic>(script, new { });
+            return allTasks;
         }
 
-        public TodoTask GetTaskById(Guid Id) 
+        public async Task<TodoTask> GetTaskById(Guid Id)
         {
-            return _tasks.FirstOrDefault(t => t.Id == Id);
+            var script = "SELECT pk_todolistid as Id, * FROM public.todolist where pk_todolistid = @Id"; //Scripts
+            var task = await _db.GetData<TodoTask, dynamic>(script, new { Id });
+            return task.FirstOrDefault();
         }
 
         public int DeleteTaskById(Guid Id)
         {
             return _tasks.RemoveAll(t => t.Id == Id);
+        }
+        public async Task Update(UpdateTaskDTO updateTaskDTO)
+        {
+            var todoTask = _mapper.Map<UpdateTaskDTO, TodoTask>(updateTaskDTO);
+            var script = "UPDATE public.todolist SET name=@Name, description=@Description, iscompleted=@IsCompleted WHERE pk_todolistid=@Id";
+            await _db.SetData(script, todoTask);
         }
     }
 }

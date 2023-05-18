@@ -21,5 +21,13 @@ namespace todolist.Data.Postgresql
                 return result;
             }
         }
+
+        public async Task SetData<U>(string script, U parameters, string connectionId)
+        {
+            using (var con = new NpgsqlConnection(_configuration.GetConnectionString(connectionId)))
+            {
+                 await con.ExecuteAsync(script, parameters);
+            }
+        }
     }
 }

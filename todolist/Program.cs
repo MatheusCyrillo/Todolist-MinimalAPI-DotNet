@@ -24,23 +24,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/tasks", (ITaskRepository taskRepository) =>
+app.MapGet("/api/tasks", async (ITaskRepository taskRepository) =>
 {
-    return Results.Ok(taskRepository.GetAllTasks());
+    return Results.Ok(await taskRepository.GetAllTasks());
 })
 .WithName("GetAllTasks")
 .WithOpenApi();
 
-app.MapGet("/api/task/{id:Guid}", (ITaskRepository taskRepository, Guid id) =>
+app.MapGet("/api/task/{id:Guid}", async (ITaskRepository taskRepository, Guid id) =>
 {
-    return Results.Ok(taskRepository.GetTaskById(id));
+    return Results.Ok(await taskRepository.GetTaskById(id));
 })
 .WithName("GetTask")
 .WithOpenApi();
 
-app.MapPost("/api/task", (ITaskRepository taskRepository, [FromBody] CreateTaskDTO createTaskDTO) =>
+app.MapPost("/api/task", async (ITaskRepository taskRepository, [FromBody] CreateTaskDTO createTaskDTO) =>
 {
-    Guid id = taskRepository.Create(createTaskDTO);
+    Guid id = await taskRepository.Create(createTaskDTO);
     return Results.CreatedAtRoute("GetTask", new { id });
 })
 .WithName("CreateTask")
@@ -55,6 +55,14 @@ app.MapDelete("/api/task/{id:Guid}", (ITaskRepository taskRepository, Guid id) =
 
 })
 .WithName("DeleteTask")
+.WithOpenApi();
+
+app.MapPut("/api/task", async (ITaskRepository taskRepository, [FromBody] UpdateTaskDTO updateTaskDTO) =>
+{
+    await taskRepository.Update(updateTaskDTO);
+    return Results.Ok();
+})
+.WithName("UpdateTask")
 .WithOpenApi();
 
 app.Run();
